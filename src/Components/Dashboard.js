@@ -242,9 +242,9 @@ const wordCount = (e) =>{
       <> 
         <Container fluid> 
           { loaderToggle &&
-            <Dimmer active>
+          
               <Loader>Loading </Loader>
-          </Dimmer>
+         
        }
 
         <Modal style={{maxWidth:'400px'}}
@@ -434,7 +434,13 @@ const wordCount = (e) =>{
                <Form.Group inline>
                
                  <Input  style={{width:'220px',marginRight:'5px'}}
-                 onChange ={(e)=>setSearchEnetered(e.target.value)}
+                 onChange ={ 
+                            (e)=>{
+                                  setSearchEnetered(e.target.value);
+                                   if (e.target.value === '')
+                                  setSearchInit(searchEntered);
+                            }
+                          }
                type="text" placeholder="Search by Organization Name" />
                 
                 <Button color='blue' onClick={searchHandler}>Search</Button> 
