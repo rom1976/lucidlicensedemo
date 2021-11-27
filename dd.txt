@@ -1,0 +1,121 @@
+
+import React, {useState,useEffect} from 'react';
+import {Form,Input} from 'semantic-ui-react';
+const AutoCompleteState = (props) => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const[ stateMaster,setMaster] = useState();
+  const [Loader,setLoader] =useState(false);
+  const[autoCompStyle,setAutoCompStyle] = useState({display:'block'});
+  const[cityMaster,setCityMaster] = useState();
+  const[stateCode,setStateCode] = useState();
+  const[enteredstate,setEnteredState] = useState();
+   let com;
+   var endcom ="</datalist>";
+  useEffect(()=>{
+     props.stateMaster.states &&
+      setMaster(props.stateMaster);
+      setLoader(true);
+  },[Loader, stateMaster]);
+
+  useEffect(()=>{
+    props.StateCityHandler(cityMaster,enteredstate,stateCode);
+    console.log('Called from useEffect- enteredstate');
+    console.log(enteredstate,stateCode );
+  },[cityMaster,enteredstate,stateCode]);
+  const arr=[];
+   
+  return (
+           <>
+      
+               <div>
+               <Form.Field
+                inline 
+                label='State'
+                control={Input} 
+              value={searchTerm} 
+              onChange={(e)=> {
+                  setSearchTerm(e.target.value); 
+                  setAutoCompStyle({display:'block',margin:'0px',padding:'0px',height:'100%',
+                
+                   //  position:'relative',
+                     backgroundColor:'white',
+                     padding:'0px',
+                     marginLeft:'60px',
+                     zIndex:'1'
+                    });
+                }}
+                
+           />
+              </div>
+              
+
+               <div className='row mt-3'>
+                 
+               {  props.stateMaster.states &&
+               props.stateMaster.states
+                  .filter((val) => {
+                    console.log('Within Auto Complete Now');
+                    if (searchTerm === "") { 
+                      return;
+                    } else if (
+                      val.stateName.toLowerCase().includes(searchTerm.toLowerCase())
+                    ) { 
+                     
+                      return val;
+                    
+                    }
+                  })
+                  .map((post, key) => { 
+                   arr.push(post.stateName);
+                   console.log(arr);
+                     com =" <Input list='languages' placeholder='Choose language...' />"+
+                       +" <datalist id='languages'> ";
+                          
+                   
+                    return ( 
+                      <> {
+                        com +=`<option value= ${post.stateName}> ${post.stateName}</option>`
+                      }
+                      <div  key={key}   style={autoCompStyle}>
+                        <div
+                      
+                        onClick={(e)=>
+                          { 
+                           setSearchTerm(e.target.innerText);
+                           setAutoCompStyle({display:'none'})
+                           setStateCode(post.stateCode);
+                           setEnteredState(e.target.innerText);
+                    
+                           console.log(e.target.innerText);
+                            }}><p>
+                           {post.stateName} </p>
+                            
+                           </div>
+                      </div>
+                    </>
+                    );
+                     
+                  }) 
+            
+                 }
+               
+            </div>
+            {com +=endcom} 
+     </>
+    
+  )
+
+}
+
+  
+  
+
+ 
+export default AutoCompleteState;
+
+
+
+   com +=`<option value= ${post.stateName}> ${post.stateName}</option>`
+
+   com =" <Input list='languages' placeholder='Choose language...' />"+
+                       +" <datalist id='languages'> ";

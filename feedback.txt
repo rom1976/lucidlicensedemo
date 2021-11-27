@@ -1,0 +1,26 @@
+1) Search clear
+
+2) Reset session storage for New Organization
+
+3) Property Image/Edit not updated
+
+4) Image Choose file (file name display not required)
+
+5) Input Fields Auto Suggestion not required
+
+6) preview back button is required
+
+7) Property Registration division fixed with border
+
+8) Select Modules should get updated with show/hide for all modules and sub modules
+
+9) Select Modules header should get cleared while not displayed (eg: POS (4) to POS (0))
+
+10) Preview - GSTN /PAN 1st Column - then the reg number.
+
+11) Result page - Header Response Message (remove preview header)
+
+12) Add Back button for Preview
+
+
+ 

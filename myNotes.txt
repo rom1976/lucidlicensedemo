@@ -1,0 +1,21 @@
+
+1) Undefined error may come coz of any small issues, like wrong variables, arrays, objects syntax ..etc..
+
+2) Axios.then(()=> do all tranformed data here in the first level) 
+
+3) remove e.preventDefault for issues related default input behaviours.
+
+4) useEffect dependencies are critical in see the results on screen correctly(even after state update or function calling ...)
+
+5) Input lose focus while onChange event is used, the reason is it is defined in the same component out side main return.
+
+   and trying use as a internal component, causes this error.
+
+Solution : either remove the component and use it directly inside main return or use as an external componenent and then import it.
+
+
+https://docs.google.com/document/d/1psTzzoTIAnPYrTWaZx2P98ZYx-oXz-F2yMUmrb5eYNs/edit
+
+
+  	
+

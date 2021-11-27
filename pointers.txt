@@ -1,0 +1,27 @@
+
+Pagination page number only and current one
+needs to enter
+the page no.
+
+25 records by default
+
+then 50 and 100.
+
+page form data come back and editable 
+
+Remove unnecessary data from the preview page show only the user view data.
+
+dashboard card - view get password for view
+
+
+
+
+
+
+
+
+
+
+
+
+

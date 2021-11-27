@@ -1,0 +1,23 @@
+axios.post('https://dev.lucidits.com/LUCIDAPI/V1/UploadImage',ctx.orgDetails.OrganizationDetails.formImage
+    ,{headers: { Authorization: `Bearer ${ctx.APIToken}`},
+                "Content-Type": "application/json"
+                }
+    ).then((response)=>{
+      console.log('uploaded the image');
+      console.log(response.data)
+  }).catch((error)=>{
+      console.log(error);
+
+  })
+
+npm install base-64
+
+const reader = new FileReader();
+reader.onloadend = () => {
+   setImageString(reader.result as string);
+
+}
+
+reader.readAsDataURL(image);
+
+

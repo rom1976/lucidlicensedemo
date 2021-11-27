@@ -1,0 +1,455 @@
+
+import { Container,Button,Grid,Table,Image,Modal } from 'semantic-ui-react';
+import axios from "axios"; 
+import { useState,useEffect,useContext} from "react";
+import { Redirect } from 'react-router';
+import Result from './Result';
+import ResponseModal from './ResponseModal';
+
+import ContextData from "../store/context-data"; 
+import { Alert } from 'react-bootstrap';
+const Upload = (props) =>{
+     const ctx = useContext(ContextData);
+     const[orgDetails,setOrgDetails] = useState([ctx.orgDetails]);
+     const[propertyDetails,setPropDetails] = useState([ctx.newProperty]);
+     const[selectedModules,setModules] = useState([ctx.selectedModules]);
+     const[defaultUsers,setDefaultUsers] = useState(ctx.defaultUsers);
+     const [orgImage,setOrgImage] = useState(ctx.orgDetails.OrganizationDetails.imageData);
+     const [preview,setPreview] = useState();
+     const [responseData, setResponseData] = useState();
+     const [modulesArr,setModulesArr ] = useState( ctx.selectedModules.map((item)=>{
+      return(
+             {
+                ModuleCode: item.ModuleCode,
+                Features:item.Features,
+                 SubModules:item.SubModules
+             }
+      )
+}) ); 
+ const moduleCodeArr = ctx.selectedModules.map((item)=>{
+  return(
+         {
+            ModuleCode: item.ModuleCode,
+            Features: item.Features && item.Features.map((item)=>item),
+          //  SubModules:item.SubModules &&  item.SubModules.map((item)=>item) 
+         }
+  )
+});
+
+
+    
+  useEffect(()=>{
+    //  ctx.orgDetails &&
+     console.log(ctx.orgDetails);   
+     console.log((ctx.newProperty)); 
+     const tryarr = [ctx.selectedModules];
+     console.log('Ia m the same or new '+tryarr);
+     console.log(ctx.defaultUsers); 
+     console.log(ctx.orgDetails.imageData); 
+  },[ctx.orgDetails,ctx.newProperty,ctx.selectedModules,ctx.defaultUsers,ctx.orgDetails.imageData])
+
+  useEffect(() => {
+    if (!ctx.orgDetails.OrganizationDetails.imageData) {
+        setPreview(undefined)
+        console.log('From upload file and not ct.irg..imageData');
+        console.log(ctx.orgDetails.OrganizationDetails.imageData)
+        return
+    }
+    const objectUrl = URL.createObjectURL(orgImage)
+    setPreview(objectUrl)
+
+    // free memory when ever this component is unmounted
+   // return () => URL.revokeObjectURL(objectUrl)
+}, [setPreview,orgImage,ctx.orgDetails.OrganizationDetails.imageData]) 
+
+  const create = () =>{
+
+      const OrgMiniData =orgDetails.OrganizationDetails;
+      const uploadData = [ { 
+        OrganizationDetails:{
+            OrganizationName:  ctx.orgDetails.OrganizationDetails.OrganizationName,
+            ImageUrl: ctx.orgDetails.OrganizationDetails.ImageUrl,
+            Address:{ 
+                AddressLine1: ctx.orgDetails.OrganizationDetails.Address.AddressLine1,
+                AddressLine2: ctx.orgDetails.OrganizationDetails.Address.AddressLine2,
+                AddressLine3: ctx.orgDetails.OrganizationDetails.Address.AddressLine3,
+                AreaCode: Number(ctx.orgDetails.OrganizationDetails.Address.AreaCode),
+                AreaName: ctx.orgDetails.OrganizationDetails.Address.AreaName,
+                CityCode: Number(ctx.orgDetails.OrganizationDetails.Address.CityCode),
+                CityName: ctx.orgDetails.OrganizationDetails.Address.CityName,
+                StateCode:Number(ctx.orgDetails.OrganizationDetails.Address.StateCode),
+                CountryCode:Number(ctx.orgDetails.OrganizationDetails.Address.CountryCode),
+                ZipCode: ctx.orgDetails.OrganizationDetails.Address.ZipCode,
+                Landmark:ctx.orgDetails.OrganizationDetails.Address.Landmark,
+            },
+            ContactDetails:{
+                MobileCountryCode:ctx.orgDetails.OrganizationDetails.ContactDetails.MobileCountryCode,
+                MobileNo: ctx.orgDetails.OrganizationDetails.ContactDetails.MobileNo,
+                TelephoneCountryCode:ctx.orgDetails.OrganizationDetails.ContactDetails.TelephoneCountryCode,
+                TelephoneAreaCode:ctx.orgDetails.OrganizationDetails.ContactDetails.TelephoneAreaCode,
+                TelephoneNo:ctx.orgDetails.OrganizationDetails.ContactDetails.TelephoneNo,
+                EmailId:ctx.orgDetails.OrganizationDetails.ContactDetails.EmailId,
+                Website:ctx.orgDetails.OrganizationDetails.ContactDetails.Website, 
+            },
+            Status:Number(ctx.orgDetails.OrganizationDetails.Status),
+        },
+        PropertyDetails:{  
+            PropertyName:ctx.newProperty.PropertyDetails.ObjFormProperty.PropertyName,
+            ShortName:ctx.newProperty.PropertyDetails.ObjFormProperty.ShortName,
+            ImageUrl:ctx.newProperty.PropertyDetails.ObjFormProperty.ImageUrl,
+            Address:{
+              AddressLine1:ctx.newProperty.PropertyDetails.formPropAdrsData.Address.AddressLine1, 
+              AddressLine2:ctx.newProperty.PropertyDetails.formPropAdrsData.Address.AddressLine2,
+              AddressLine3:ctx.newProperty.PropertyDetails.formPropAdrsData.Address.AddressLine3,
+              AreaCode: Number(ctx.orgDetails.OrganizationDetails.Address.AreaCode),
+              AreaName:ctx.newProperty.PropertyDetails.formPropAdrsData.Address.AreaName, 
+                CityCode: Number(ctx.orgDetails.OrganizationDetails.Address.CityCode),
+                CityName:ctx.newProperty.PropertyDetails.formPropAdrsData.Address.CityName,
+                StateCode:Number(ctx.orgDetails.OrganizationDetails.Address.StateCode),
+                CountryCode:Number(ctx.orgDetails.OrganizationDetails.Address.CountryCode),
+                ZipCode: ctx.orgDetails.OrganizationDetails.Address.ZipCode,
+                Landmark:ctx.newProperty.PropertyDetails.formPropAdrsData.Address.Landmark,
+                Latitude:Number(ctx.newProperty.PropertyDetails.formPropAdrsData.Address.Latitude),
+                Longitude:Number(ctx.newProperty.PropertyDetails.formPropAdrsData.Address.Longitude),
+            },
+            ContactDetails:{ 
+                MobileCountryCode: ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.MobileCountryCode, 
+                MobileNo:ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.MobileNo,   
+                TelephoneCountryCode:ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.TelephoneCountryCode,
+                TelephoneAreaCode: ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.TelephoneAreaCode,
+                TelephoneNo: ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.TelephoneNo,
+                EmailId:  ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.EmailId,
+                Website:ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.Website,
+            },
+            Status:ctx.newProperty.PropertyDetails.Status,
+            RegistrationDetails: ctx.newProperty.PropertyDetails.formPropRegData,
+            YearEndSettings:{
+                OpeningFinancialMonth:Number(ctx.newProperty.PropertyDetails.YearEndSettings.OpeningFinancialMonth),   
+                StartDayOfTheMonth:Number(ctx.newProperty.PropertyDetails.YearEndSettings.StartDayOfTheMonth),
+            },
+            SelectedModules:ctx.selectedModules, 
+        },
+        DefaultUsers:ctx.defaultUsers,
+      }];
+
+       
+        console.log('Data upload inti Img Url');
+      console.log(uploadData); 
+    axios.post('https://dev.lucidits.com/LUCIDLicenseManagementAPI/V1/CreateOrganization',
+    {
+      "OrganizationDetails":{
+          "OrganizationName":ctx.orgDetails.OrganizationDetails.OrganizationName ,
+          "ImageUrl":ctx.orgDetails.OrganizationDetails.ImageUrl,
+          "Address":{
+              "AddressLine1": ctx.orgDetails.OrganizationDetails.Address.AddressLine1,
+              "AddressLine2": ctx.orgDetails.OrganizationDetails.Address.AddressLine2,
+              "AddressLine3": ctx.orgDetails.OrganizationDetails.Address.AddressLine3,
+              "AreaCode": Number(ctx.orgDetails.OrganizationDetails.Address.AreaCode),   
+              "AreaName":ctx.orgDetails.OrganizationDetails.Address.AreaName,
+              "CityCode":Number(ctx.orgDetails.OrganizationDetails.Address.CityCode),
+              "CityName":ctx.orgDetails.OrganizationDetails.Address.CityName,
+              "StateCode":Number(ctx.orgDetails.OrganizationDetails.Address.StateCode),
+              "CountryCode":Number(ctx.orgDetails.OrganizationDetails.Address.CountryCode),
+              "ZipCode": ctx.orgDetails.OrganizationDetails.Address.ZipCode,
+              "Landmark": ctx.orgDetails.OrganizationDetails.Address.Landmark,
+          },
+          "ContactDetails":{     
+              "MobileCountryCode":ctx.orgDetails.OrganizationDetails.ContactDetails.MobileCountryCode,
+              "MobileNo":ctx.orgDetails.OrganizationDetails.ContactDetails.MobileNo.length >= 10?ctx.orgDetails.OrganizationDetails.ContactDetails.MobileNo:1111111111,
+              "TelephoneCountryCode":ctx.orgDetails.OrganizationDetails.ContactDetails.TelephoneCountryCode,
+              "TelephoneAreaCode":ctx.orgDetails.OrganizationDetails.ContactDetails.TelephoneAreaCode,
+              "TelephoneNo":ctx.orgDetails.OrganizationDetails.ContactDetails.TelephoneNo.length<=6?ctx.orgDetails.OrganizationDetails.ContactDetails.TelephoneNo:'12345',
+              "EmailId": ctx.orgDetails.OrganizationDetails.ContactDetails.EmailId.includes('@')?ctx.orgDetails.OrganizationDetails.ContactDetails.EmailId:'test@email.com',
+              "Website": ctx.orgDetails.OrganizationDetails.ContactDetails.Website, 
+          },
+         
+          "Status":Number(ctx.orgDetails.OrganizationDetails.Status),
+      },
+      "PropertyDetails":{
+          "PropertyName": ctx.newProperty.PropertyDetails.ObjFormProperty.PropertyName,
+          "ShortName":ctx.newProperty.PropertyDetails.ObjFormProperty.ShortName,
+          "ImageUrl":ctx.orgDetails.OrganizationDetails.ImageUrl,
+          "Address":{    
+              "AddressLine1":ctx.newProperty.PropertyDetails.formPropAdrsData.Address.AddressLine1, 
+              "AddressLine2":ctx.newProperty.PropertyDetails.formPropAdrsData.Address.AddressLine2,
+              "AddressLine3":ctx.newProperty.PropertyDetails.formPropAdrsData.Address.AddressLine3,
+              "AreaCode":Number(ctx.orgDetails.OrganizationDetails.Address.AreaCode),  
+              "AreaName":ctx.newProperty.PropertyDetails.formPropAdrsData.Address.AreaName, 
+              "CityCode": Number(ctx.orgDetails.OrganizationDetails.Address.CityCode),
+              "CityName":ctx.newProperty.PropertyDetails.formPropAdrsData.Address.CityName,
+              "StateCode":Number(ctx.orgDetails.OrganizationDetails.Address.StateCode),
+              "CountryCode":Number(ctx.orgDetails.OrganizationDetails.Address.CountryCode),
+              "ZipCode": "",
+              "Landmark": "",
+              "Latitude": 0,
+              "Longitude": 0
+          },
+          "ContactDetails":{
+              "MobileCountryCode": "",
+              "MobileNo": "",
+              "TelephoneCountryCode": "",
+              "TelephoneAreaCode": "",
+              "TelephoneNo": "",
+              "EmailId": "",
+              "Website": ""
+          },
+          "Status": Number(ctx.newProperty.PropertyDetails.Status),
+          "RegistrationDetails":ctx.newProperty.PropertyDetails.formPropRegData,
+          "YearEndSettings":{
+              "OpeningFinancialMonth":Number(ctx.newProperty.PropertyDetails.YearEndSettings.OpeningFinancialMonth),   
+              "StartDayOfTheMonth": Number(ctx.newProperty.PropertyDetails.YearEndSettings.StartDayOfTheMonth),
+          },
+          "SelectedModules": moduleCodeArr,
+      },
+      "DefaultUsers":ctx.defaultUsers,
+      "SystemDetails":{
+          "ApplicationName":"LUCID License Management",
+          "ApplicationVersion":"1.0.0.0",
+          "BrowserName":"Chrome",
+          "BrowserVersion":"83",
+          "DeviceId":"",
+          "DeviceType":"Desktop",
+          "IP":"2409:4072:198:c9b1:95a:80d4:a728:36e",
+          "Mac":"0210D6A869E8",
+          "OPS":"5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/83.0.4103.97 Safari\/537.36",
+          "Source":"React App",
+          "SystemName":"EC2AMAZ-EVPTFRH",
+          "SystemTimeZoneId":1
+      }
+  }
+   ,{headers: { Authorization: `Bearer ${ctx.APIToken}`},
+                "Content-Type": "application/json"
+                }
+  
+    ).then((response)=>{
+        console.log('uploaded the data');
+        console.log(response.data);
+        setResponseData(response.data); 
+      //  <Redirect to='/Response' />
+      
+    }).catch((error)=>{
+        console.log(error); 
+        setResponseData(error); 
+     //   <Redirect to='/Response' />
+    })
+
+   
+      
+    
+
+      
+  } 
+  {
+    //create ends here
+  }
+       if(ctx.orgDetails.OrganizationDetails && !responseData){
+  return(
+        <>    
+        <Container>
+            <Grid> 
+                <h3> Organisation Details</h3>  
+                <Grid.Row  columns={2}>
+
+                <Grid.Column width={8} >
+                                     
+                 <Table color='blue' columns={2} celled inverted selectable >
+                 <Table.Header>
+                   <Table.Row textAlign='center'>
+                     <Table.HeaderCell> Fields</Table.HeaderCell>
+                     <Table.HeaderCell> Values</Table.HeaderCell> 
+                   </Table.Row>
+                 </Table.Header>
+         
+                 <Table.Body>
+                   <Table.Row>
+                         <Table.Cell>Organization Name </Table.Cell>
+                          <Table.Cell>{ctx.orgDetails.OrganizationDetails.OrganizationName}</Table.Cell> 
+                   </Table.Row>
+                   <Table.Row>
+                   <Table.Cell>
+                       AreaCode  </Table.Cell>
+                       <Table.Cell> {Number(ctx.orgDetails.OrganizationDetails.Address.AreaCode)}  </Table.Cell> 
+                   </Table.Row>
+                     <Table.Row><Table.Cell> AreaName  </Table.Cell><Table.Cell>{ctx.orgDetails.OrganizationDetails.Address.AreaName}   </Table.Cell>  </Table.Row>
+                          <Table.Row> <Table.Cell>CityCode  </Table.Cell><Table.Cell>{Number( ctx.orgDetails.OrganizationDetails.Address.CityCode)}  </Table.Cell>  </Table.Row>
+                           <Table.Row><Table.Cell>CityName  </Table.Cell><Table.Cell>{ctx.orgDetails.OrganizationDetails.Address.CityName}   </Table.Cell>  </Table.Row>
+                           <Table.Row><Table.Cell>StateCode  </Table.Cell><Table.Cell>{ctx.orgDetails.OrganizationDetails.Address.StateCode}   </Table.Cell>  </Table.Row>
+                           <Table.Row><Table.Cell>CountryCode  </Table.Cell><Table.Cell>{ctx.orgDetails.OrganizationDetails.Address.CountryCode}   </Table.Cell>  </Table.Row>
+                           <Table.Row><Table.Cell>ZipCode  </Table.Cell><Table.Cell>{ctx.orgDetails.OrganizationDetails.Address.ZipCode}   </Table.Cell>  </Table.Row>
+                           <Table.Row><Table.Cell>Landmark  </Table.Cell><Table.Cell>{ctx.orgDetails.OrganizationDetails.Address.Landmark}   </Table.Cell>  </Table.Row>  
+                           <Table.Row style={{backgroundColor:'darkblue'}}> <Table.Cell>  <h4>Contact Details</h4></Table.Cell>  <Table.Cell> </Table.Cell> </Table.Row>
+                            <Table.Row>     <Table.Cell>  MobileCountryCode  </Table.Cell><Table.Cell> {ctx.orgDetails.OrganizationDetails.ContactDetails.MobileCountryCode}   </Table.Cell>  </Table.Row>
+                             <Table.Row>    <Table.Cell>  MobileNo  </Table.Cell><Table.Cell> {ctx.orgDetails.OrganizationDetails.ContactDetails.MobileNo}  </Table.Cell>  </Table.Row>
+                              <Table.Row>   <Table.Cell>  TelephoneCountryCode  </Table.Cell><Table.Cell> {ctx.orgDetails.OrganizationDetails.ContactDetails.MobileNo}  </Table.Cell>  </Table.Row>
+                               <Table.Row>  <Table.Cell>  TelephoneAreaCode  </Table.Cell><Table.Cell> {ctx.orgDetails.OrganizationDetails.ContactDetails.TelephoneAreaCode}  </Table.Cell>  </Table.Row>
+                                <Table.Row> <Table.Cell>  TelephoneNo  </Table.Cell><Table.Cell> {ctx.orgDetails.OrganizationDetails.ContactDetails.TelephoneNo}  </Table.Cell>  </Table.Row>
+                                 <Table.Row><Table.Cell>  EmailId  </Table.Cell><Table.Cell>  {ctx.orgDetails.OrganizationDetails.ContactDetails.EmailId}  </Table.Cell>  </Table.Row>
+                                 <Table.Row><Table.Cell>  Website  </Table.Cell><Table.Cell>  {ctx.orgDetails.OrganizationDetails.ContactDetails.Website}  </Table.Cell>  </Table.Row>
+                                 <Table.Row><Table.Cell>Status  </Table.Cell><Table.Cell> {ctx.orgDetails.OrganizationDetails.Status==='1'?'Active':'Passive'}  </Table.Cell>  </Table.Row>
+                  </Table.Body>
+                </Table> 
+                               </Grid.Column>
+                               <Grid.Column width={5}>
+                               {ctx.orgDetails.OrganizationDetails.imageData ? <Image size='small' rounded src={preview} alt='organization picprop'/> :
+                               <i className="fa fa-picture-o" aria-hidden="true" style={{fontSize:'150px'}}></i>   }
+                               </Grid.Column>
+                           </Grid.Row> 
+                           <h3> Property Details</h3>  
+                <Grid.Row columns={2}>
+                <Grid.Column width={8}>
+                                     
+                 <Table color='blue' columns={2} celled inverted selectable >
+                 <Table.Header>
+                   <Table.Row textAlign='center'>
+                     <Table.HeaderCell> Fields</Table.HeaderCell>
+                     <Table.HeaderCell> Values</Table.HeaderCell> 
+                   </Table.Row>
+                 </Table.Header>
+         
+                 <Table.Body>
+                   <Table.Row>
+                         <Table.Cell>Organization Name </Table.Cell>
+                          <Table.Cell>{ctx.orgDetails.OrganizationDetails.OrganizationName}</Table.Cell> 
+                   </Table.Row>
+                   
+                    <Table.Row><Table.Cell>  PropertyName</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.ObjFormProperty.PropertyName}  </Table.Cell>  </Table.Row>
+                        <Table.Row><Table.Cell>  ShortName</Table.Cell><Table.Cell>  {ctx.newProperty.PropertyDetails.ObjFormProperty.ShortName}  </Table.Cell>  </Table.Row>
+                        
+                        <Table.Row style={{backgroundColor:'darkblue'}}> <Table.Cell>  <h4>Address</h4></Table.Cell>  <Table.Cell> </Table.Cell> </Table.Row>
+                        
+                       <Table.Row><Table.Cell>  AddressLine1</Table.Cell><Table.Cell>  {ctx.newProperty.PropertyDetails.formPropAdrsData.Address.AddressLine1} </Table.Cell>  </Table.Row>
+                       <Table.Row><Table.Cell>  AddressLine2</Table.Cell><Table.Cell>  {ctx.newProperty.PropertyDetails.formPropAdrsData.Address.AddressLine2}  </Table.Cell>  </Table.Row>
+                       <Table.Row><Table.Cell>  AddressLine3</Table.Cell><Table.Cell>  {ctx.newProperty.PropertyDetails.formPropAdrsData.Address.AddressLine3}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>  AreaCode</Table.Cell><Table.Cell>  {ctx.newProperty.PropertyDetails.formPropAdrsData.Address.AreaCode}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>  AreaName</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.Address.AreaName}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>   CityCode</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.Address.CityCode}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>   CityName</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.Address.CityName}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>  StateCode</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.Address.StateCode}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>  ZipCode</Table.Cell><Table.Cell>  {ctx.newProperty.PropertyDetails.formPropAdrsData.Address.ZipCode}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>  CountryCode</Table.Cell><Table.Cell>   {ctx.newProperty.PropertyDetails.formPropAdrsData.Address.CountryCode}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>   Landmark</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.Address.Landmark}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>  Latitude</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.Address.Latitude}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>   Longitude</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.Address.Longitude}  </Table.Cell>  </Table.Row>
+                      <Table.Row style={{backgroundColor:'darkblue'}}> <Table.Cell>  <h4>ContactDetails</h4></Table.Cell>  <Table.Cell> </Table.Cell> </Table.Row>
+                      <Table.Row><Table.Cell>   MobileCountryCode</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.MobileCountryCode}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>   Mobile No</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.MobileNo} </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>   TelephoneCountryCode</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.TelephoneCountryCode}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>   TelephoneAreaCode</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.TelephoneAreaCode}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>   TelephoneNo</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.TelephoneNo}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>   EmailId</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.EmailId}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>   Website</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropAdrsData.ContactDetails.Website}  </Table.Cell>  </Table.Row>
+                      <Table.Row ><Table.Cell>   Status</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.Status}  </Table.Cell>  </Table.Row> 
+                      <Table.Row style={{backgroundColor:'darkblue'}}> <Table.Cell>  <h4>RegistrationDetails</h4></Table.Cell>  <Table.Cell> </Table.Cell> </Table.Row> 
+                    
+                      <Table.Row><Table.Cell>   Registration Type</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropRegData.map((item)=>{ return item.RegistrationTypeId===1?'GSTN':'PAN'})}  </Table.Cell>  </Table.Row>
+                      <Table.Row><Table.Cell>   RegistrationNumber</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.formPropRegData.map((item)=>item.RegistrationNumber)}  </Table.Cell>  </Table.Row>
+                      <Table.Row style={{backgroundColor:'darkblue'}}> <Table.Cell>  <h4>YearEndSettings</h4></Table.Cell>  <Table.Cell> </Table.Cell> </Table.Row> 
+                    
+                      <Table.Row><Table.Cell>   OpeningFinancialMonth</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.YearEndSettings.OpeningFinancialMonth}  </Table.Cell>  </Table.Row>    
+                      <Table.Row><Table.Cell>   Start Day Of The Month</Table.Cell><Table.Cell> {ctx.newProperty.PropertyDetails.YearEndSettings.StartDayOfTheMonth}  </Table.Cell>  </Table.Row>    
+                      <Table.Row style={{backgroundColor:'darkblue'}}> <Table.Cell>  <h4>Selected Modules</h4></Table.Cell>  <Table.Cell> </Table.Cell> </Table.Row>  
+                         {ctx.selectedModules.map((item)=>{
+                                 return(
+                                        <> 
+                                            <Table.Row><Table.Cell>Module Code</Table.Cell> <Table.Cell> {item.ModuleCode}</Table.Cell></Table.Row> 
+                                             
+                                        </>
+                                 )
+                         })}
+                      <Table.Row style={{backgroundColor:'darkblue'}}> <Table.Cell>  <h4>User Details</h4></Table.Cell>  <Table.Cell> </Table.Cell> </Table.Row> 
+                      <Table.Row><Table.Cell> <h4>DefaultUsers</h4> </Table.Cell> <Table.Cell> </Table.Cell></Table.Row> 
+                      <Table.Row><Table.Cell> <h4>User ID</h4> </Table.Cell> <Table.Cell> Password</Table.Cell></Table.Row> 
+                        
+                             {ctx.defaultUsers.map((item)=>{
+                                  return(
+                                      <>
+                                       <Table.Row key={item.UserId}><Table.Cell> {item.UserId}</Table.Cell> <Table.Cell> {item.Password}</Table.Cell></Table.Row> 
+                                
+                              </>
+                              )
+                           })} 
+                  
+                  </Table.Body>
+                    </Table> 
+                    <Grid.Row columns={1}>
+                        <Grid.Column width={3}>
+                        <Button color='blue' onClick={create}>Create</Button>
+                        
+                        </Grid.Column>
+                       
+                    </Grid.Row> 
+                               </Grid.Column>
+                              
+                               
+                               <Grid.Column width={8}>   {
+                                                      //right colums starts here
+                                                      }
+                                
+                                 <Grid.Row columns={1} >
+
+                                   <Grid.Column width={3}  style={{height:'150px',marginBottom:'1000px'}}>
+                                   {ctx.orgDetails.OrganizationDetails.imageData ? <Image size='small' rounded src={preview} alt='organization picprop'/> :
+                                     <i className="fa fa-picture-o" aria-hidden="true" style={{fontSize:'150px'}}></i>   }
+                                   </Grid.Column> 
+                                  </Grid.Row> 
+                                  <Grid.Row>
+
+                                  <Grid.Column width={5} style={{ marginTop:'1200px'}}>
+
+                                    <Table color='blue' columns={2} celled inverted selectable >
+                                      <Table.Header>
+                                      
+                                                       </Table.Header>
+                                      <Table.Body>
+                                      <Table.Row style={{backgroundColor:'darkblue'}}> <Table.Cell>  <h4>Selected Sub-Modules</h4></Table.Cell>  <Table.Cell> </Table.Cell> </Table.Row>  
+                         {ctx.selectedModules.map((item)=>{
+                                 return(
+                                        <> 
+                                            { item.Features &&
+                                            <Table.Row><Table.Cell>Features</Table.Cell> <Table.Cell> {item.Features}</Table.Cell></Table.Row> 
+                                           }
+                                           { item.SubModules &&
+                                            <Table.Row><Table.Cell>SubModules</Table.Cell> <Table.Cell> {item.SubModules}</Table.Cell></Table.Row> 
+                                           } 
+                                        </>
+                                 )
+                         })} 
+
+                                      </Table.Body>
+                                    </Table>
+                              
+
+                                 </Grid.Column>
+                                  </Grid.Row>
+
+
+
+
+                               </Grid.Column> 
+
+                               
+                           </Grid.Row> 
+
+                            
+                       </Grid> 
+
+
+                       
+                  </Container>       
+        </>
+
+  )}else if(responseData){
+    <Result />
+  }
+  
+  else{
+      return (
+          <>
+             <h3> Loading.....</h3>
+           </>
+      )
+  }
+
+}
+
+export default Upload;

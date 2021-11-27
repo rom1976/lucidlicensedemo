@@ -1,0 +1,134 @@
+import React from "react";
+import { useState } from "react";
+import {Container,Col,Row,Form} from 'react-bootstrap';
+
+
+
+const NewProperty = () =>{
+
+     const [xstyle,setXstyle] = useState({height:'0px'});
+     const [minMaxIcon,setMinMaxIcon] = useState('[+]');
+
+     const expand = () => {
+        if (minMaxIcon === '[+]'){
+            setXstyle({ height:'200px', opacity:1})
+            setMinMaxIcon('[-]')
+        }
+        else{
+           setMinMaxIcon( '[+]')
+           setXstyle({ height:'0px', opacity:0})
+        }
+     };
+     
+
+
+    return (
+        <>
+        <Container>
+           <Row>
+           <Col md={4}></Col>
+           <Col md={4}><h1>Create Organization</h1></Col>
+           <Col md={4}></Col>
+            </Row>
+           
+            <Row className='mt-3'>
+            <Col md={2}>
+            <Form.Label> Organization Name *</Form.Label>
+            </Col>    
+           <Col md={4}>
+           <Form>
+            <Form.Control type="text" placeholder="Normal text" />
+            </Form>
+           </Col>
+           <Col md={1}> </Col>
+           <Col md={3}>
+           <i className="fa fa-picture-o" aria-hidden="true" style={{fontSize:'150px'}}></i>
+           </Col>
+            </Row>
+
+            <Row className=''>
+             <Col md={1}>
+               <Form.Label>
+                Status*
+                </Form.Label>
+             </Col>
+             <Col md={1}> </Col>
+             <Col md={1}>
+             <Form.Check
+               type="radio"
+               label="Active"
+               name="status"
+               id="statusActive"
+             />
+             </Col>
+             <Col md={1}>
+             <Form.Check
+               type="radio"
+               label="Passive"
+               name="status"
+               id="statusPassive"
+             />
+             </Col>
+             <Col md={8}>
+             </Col>
+            </Row>
+          
+            <Row>
+             <Col>
+                <Form.Label  as="legend" onClick={expand}>
+                  {minMaxIcon} Address & Contact Details
+                </Form.Label>
+             </Col>
+             </Row>
+
+             <div >
+
+             <Row className ='xpand' style={xstyle}>
+             <Col md={1}>
+              
+                Status*
+                
+             </Col>
+             <Col md={1}> </Col>
+             <Col md={1}>
+             <Form.Check
+               type="radio"
+               label="Active"
+               name="status"
+               id="statusActive"
+             />
+             </Col>
+             <Col md={1}>
+             <Form.Check
+               type="radio"
+               label="Passive"
+               name="status"
+               id="statusPassive"
+             />
+             </Col>
+             <Col md={8}>
+             </Col>
+            </Row>
+            </div>
+            
+          </Container>
+        </>
+
+      
+    )
+}
+
+export default NewProperty;
+
+
+.xpand{
+    margin-left:30px;
+    height: 0px;
+    opacity: 0;
+   // transition-property: height opacity;
+    transition:opacity .5s, 1s;
+    border:2px solid rgb(185, 184, 184)
+  
+}
+<script src="https://use.fontawesome.com/2f73c28074.js"></script>
+

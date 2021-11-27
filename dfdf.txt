@@ -1,0 +1,48 @@
+
+
+Discussion Pointers
+
+1) Change pagination count to 10 , 15 ...
+
+2) Add photo button in properties page also
+
+2) Show Organization address in the Property address fields
+
+3) Register/Show multiple registration cards
+
+4) Module (7) - show count in brackets
+
+5) Show Module and sub module as list/tree in the preview page.
+
+   stateHandler();
+    countryMaster.countries &&
+      countryMaster.countries.map((item)=>{
+        enteredCountry === item.countryName &&
+        setCountryCode(item.countryCode);
+        console.log(' Country Selection ----'+ item.countryName,item.countryCode);
+      })
+
+
+
+  AddressLine1: ctx.orgDetails.OrganizationDetails.Address.AddressLine1,
+              AddressLine2: ctx.orgDetails.OrganizationDetails.Address.AddressLine2,
+              AddressLine3: ctx.orgDetails.OrganizationDetails.Address.AddressLine3,
+              AreaCode: Number(ctx.orgDetails.OrganizationDetails.Address.AreaCode),
+              AreaName: ctx.orgDetails.OrganizationDetails.Address.AreaName,
+              CityCode: Number(ctx.orgDetails.OrganizationDetails.Address.CityCode),
+              CityName: ctx.orgDetails.OrganizationDetails.Address.CityName,
+              StateCode:Number(ctx.orgDetails.OrganizationDetails.Address.StateCode),
+              CountryCode:Number(ctx.orgDetails.OrganizationDetails.Address.CountryCode),
+              ZipCode: ctx.orgDetails.OrganizationDetails.Address.ZipCode,
+              Landmark:ctx.orgDetails.OrganizationDetails.Address.Landmark,
+
+
+
+
+    MobileCountryCode:ctx.orgDetails.OrganizationDetails.ContactDetails.MobileCountryCode,
+              MobileNo: ctx.orgDetails.OrganizationDetails.ContactDetails.MobileNo,
+              TelephoneCountryCode:ctx.orgDetails.OrganizationDetails.ContactDetails.MobileNo,
+              TelephoneAreaCode:ctx.orgDetails.OrganizationDetails.ContactDetails.TelephoneAreaCode,
+              TelephoneNo:ctx.orgDetails.OrganizationDetails.ContactDetails.TelephoneNo,
+              EmailId:ctx.orgDetails.OrganizationDetails.ContactDetails.EmailId,
+              Website:ctx.orgDetails.OrganizationDetails.ContactDetails.Website, 

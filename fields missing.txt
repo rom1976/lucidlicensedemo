@@ -1,0 +1,62 @@
+Data Validation 
+
+CityCode: undefined
+CityName: undefined
+CountryCode
+MobileCountryCode
+
+
+Property
+
+ShortName
+ImageUrl
+AreaName
+CityCode
+StateCode
+CountryCode
+TelephoneAreaCode
+Website
+OpeningFinancialMonth
+
+
+ Status                  Enum                0 - Passive
+ (Required) 
+
+NR
+AreaCode                Int
+
+ CityCode                Int
+ StateCode               Int
+ CountryCode             Int
+
+Contact all string
+
+
+
+
+
+error: cannot lock ref 'refs/remotes/origin/main': unable to resolve reference 'refs/remotes/origin/main': reference broken
+From https://github.com/rom1976/lucidlicense
+ ! [new branch]      main       -> origin/main  (unable to update local ref)
+
+
+ PropertyName               String              Max Length 100
+ (Required)
+ ShortName                  String              Max Length 50
+ ImageUrl                   String
+ Address                    Object              Property Address
+ ContactDetails             Object              Property Contact Details
+ RegistrationDetails        List<Object>        Property Registration Details
+ YearEndSettings            Object
+ SelectedModules            List<Object>
+ (Required)
+ Status                     Enum                0 - Passive
+ (Required)                         
+
+\
+RegistrationTypeId         int
+ (Required)
+ RegistrationNumber         String              Max Length 50
+ (Required)
+ Status                     Enum                0 - Passive
+ (Required)                                     1 - Active
